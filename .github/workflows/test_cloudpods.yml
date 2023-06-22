@@ -81,17 +81,18 @@ jobs:
       - name: Smoke Tests
         run: |
           # check restored item is still available
+          sleep 30
           count=$(awslocal dynamodb scan --table-name sqs-fargate-ddb-table | jq -r '.Count')
           if [ "1" != ${count} ]; then
             echo "pod restore failed, expected 1 item in the database"
             exit 1
           fi
-
+          
           SQS_QUEUE="sqs-fargate-queue"
           # try to add additional data
           awslocal sqs send-message --queue $SQS_QUEUE --message-body '{"message": "my new message"}'
           echo "waiting to process the message..."
-          sleep 3
+          sleep 30
           count=$(awslocal dynamodb scan --table-name sqs-fargate-ddb-table | jq -r '.Count')
           if [ "2" != ${count} ]; then
             echo "pod restore failed, expected 2 items in the database"

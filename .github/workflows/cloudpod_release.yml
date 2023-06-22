@@ -47,7 +47,7 @@ jobs:
           docker network create $NETWORK_NAME
           pip install localstack awscli-local[ver1]
           pip install terraform-local
-          docker pull localstack/localstack-pro:latest
+          docker pull localstack/localstack-pro:${{ inputs.release-tag || 'latest'}}
           # Start LocalStack in the background
           LS_LOG=trace LAMBDA_DOCKER_NETWORK=$NETWORK_NAME DOCKER_FLAGS="--network $NETWORK_NAME" DEBUG=1 localstack start -d
           # Wait 30 seconds for the LocalStack container to become ready before timing out
