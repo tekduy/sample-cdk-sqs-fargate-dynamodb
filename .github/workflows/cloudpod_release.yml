@@ -77,7 +77,8 @@ jobs:
           echo "This release includes the Cloud Pod of the sample created with LocalStack Version \`${{ inputs.release-tag || 'latest'}}\`." > Release.txt
           echo "Please be aware, that your running LocalStack instance need to be started with \`LAMBDA_DOCKER_NETWORK\`and \`DOCKER_FLAGS\`: " >> Release.txt
           echo " * the network must have the name 'localstack-shared-net', e.g.: \`NETWORK_NAME=\"localstack-shared-net\"\`" >> Release.txt
-          echo " * start LocalStack using: \`docker network create $NETWORK_NAME 2> /dev/null; LAMBDA_DOCKER_NETWORK=\$NETWORK_NAME DOCKER_FLAGS="--network \$NETWORK_NAME" DEBUG=1 localstack start -d\` \n" >> Release.txt
+          echo " * start LocalStack using: \`docker network create $NETWORK_NAME 2> /dev/null; LAMBDA_DOCKER_NETWORK=\$NETWORK_NAME DOCKER_FLAGS="--network \$NETWORK_NAME" DEBUG=1 localstack start -d\`" >> Release.txt
+          echo "" >> Release.txt
           echo "You can download the \`release-pod.zip\` and inject it manually by running \`localstack pod load file://release-pod.zip\`, or use the Cloud Pods Launchpad." >> Release.txt
           echo "### Cloud Pods Launchpad" >> Release.txt
           echo "You can click the Launchpad to inject the the pod into your running LocalStack instance using the WebUI:" >> Release.txt
