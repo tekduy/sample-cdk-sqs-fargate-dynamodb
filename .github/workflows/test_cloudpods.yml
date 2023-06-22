@@ -93,6 +93,8 @@ jobs:
           awslocal sqs send-message --queue $SQS_QUEUE --message-body '{"message": "my new message"}'
           echo "waiting to process the message..."
           sleep 30
+          echo "docker ps"
+          docker ps
           count=$(awslocal dynamodb scan --table-name sqs-fargate-ddb-table | jq -r '.Count')
           if [ "2" != ${count} ]; then
             echo "pod restore failed, expected 2 items in the database"
