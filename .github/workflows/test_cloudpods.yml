@@ -81,9 +81,8 @@ jobs:
       - name: Smoke Tests
         run: |
           # check restored item is still available
-          sleep 30
-          count=$(awslocal dynamodb scan --table-name sqs-fargate-ddb-table | jq -r '.Count')
-          if [ "1" != ${count} ]; then
+          actual_count=$(awslocal dynamodb scan --table-name sqs-fargate-ddb-table | jq -r '.Count')
+          if [ "1" != ${actual_count} ]; then
             echo "pod restore failed, expected 1 item in the database"
             exit 1
           fi
@@ -92,18 +91,26 @@ jobs:
           # try to add additional data
           awslocal sqs send-message --queue $SQS_QUEUE --message-body '{"message": "my new message"}'
           echo "waiting to process the message..."
-          sleep 30
+          
+          # for debugging
           echo "docker ps"
           docker ps
-          count=$(awslocal dynamodb scan --table-name sqs-fargate-ddb-table | jq -r '.Count')
-          if [ "2" != ${count} ]; then
-            echo "pod restore failed, expected 2 items in the database"
-            exit 1
-          fi
+
+          i=0
+          actual_count=$(awslocal dynamodb scan --table-name sqs-fargate-ddb-table | jq -r '.Count')
+          while [ "2" != ${actual_count} ]; do
+            i=$(( $i+1 ))
+            if [ 10 -eq ${i} ]; then
+              echo "pod restore failed, expected 2 items in the database"
+              exit 1
+            fi
+            sleep 3
+            actual_count=$(awslocal dynamodb scan --table-name sqs-fargate-ddb-table | jq -r '.Count')
+          done
           awslocal dynamodb scan --table-name sqs-fargate-ddb-table | jq -r '.Items[].message.S'
 
       - name: Show Logs
-        if: failure()
+        if: always()
         run: |
           localstack logs
 
