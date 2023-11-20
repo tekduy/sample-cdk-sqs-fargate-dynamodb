@@ -37,7 +37,7 @@ func init() {
 	customResolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
 		return aws.Endpoint{
 			PartitionID:   "aws",
-			URL:           "http://localstack_main:4566",
+			URL:           "http://localstack-main:4566",
 			SigningRegion: region,
 		}, nil
 	})
